@@ -10,52 +10,47 @@
   <p>Reproduciendo Mini CD…</p>
 
   <script>
-  (function () {
-    const params = new URLSearchParams(window.location.search);
+(async function () {
+  const params = new URLSearchParams(window.location.search);
 
-    const cd = params.get("cd") || "SIN_CD";
-    const plataforma = params.get("p") || "Desconocido";
-    const tipo = params.get("t") || "";
-    const id = params.get("id") || "";
+  const cd = params.get("cd") || "SIN_CD";
+  const plataforma = params.get("p") || "Desconocido";
+  const tipo = params.get("t") || "";
+  const id = params.get("id") || "";
 
-    const ua = navigator.userAgent;
+  const ua = navigator.userAgent;
+  let os = "Otro";
+  if (/iPhone|iPad/i.test(ua)) os = "iOS";
+  else if (/Android/i.test(ua)) os = "Android";
 
-    let os = "Otro";
-    if (/iPhone|iPad/i.test(ua)) os = "iOS";
-    else if (/Android/i.test(ua)) os = "Android";
+  const baseLogURL = "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec";
 
-    const baseLogURL = "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec";
+  const query =
+    "?cd=" + encodeURIComponent(cd) +
+    "&p=" + encodeURIComponent(plataforma) +
+    "&t=" + encodeURIComponent(tipo) +
+    "&id=" + encodeURIComponent(id) +
+    "&os=" + encodeURIComponent(os) +
+    "&nav=" + encodeURIComponent(ua);
 
-    const query =
-      "?cd=" + encodeURIComponent(cd) +
-      "&p=" + encodeURIComponent(plataforma) +
-      "&t=" + encodeURIComponent(tipo) +
-      "&id=" + encodeURIComponent(id) +
-      "&os=" + encodeURIComponent(os) +
-      "&nav=" + encodeURIComponent(ua);
+  try {
+    const res = await fetch(baseLogURL + query, { method: "GET" });
+    const data = await res.json();
 
-    // MÉTODO 1 — Pasivo
-    const img = new Image();
-    img.referrerPolicy = "no-referrer";
-    img.src = baseLogURL + query;
-
-    // MÉTODO 2 — Brave / Firefox
-    setTimeout(function () {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = baseLogURL + query;
-      document.body.appendChild(iframe);
-    }, 50);
-
-    // Redirección final
-    if (plataforma === "Spotify" && tipo === "track" && id) {
-      setTimeout(function () {
+    if (data.activo === true) {
+      if (plataforma === "Spotify" && tipo === "track" && id) {
         window.location.href =
           "https://open.spotify.com/track/" + id;
-      }, 300);
+      }
+    } else {
+      window.location.href = "inactivo.html";
     }
-  })();
-  </script>
+  } catch (e) {
+    // fallback seguro
+    window.location.href = "inactivo.html";
+  }
+})();
+</script>
 
 </body>
 </html>
