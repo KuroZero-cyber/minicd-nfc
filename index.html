@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini CD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
+  <p>Reproduciendo Mini CD…</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const plataforma = params.get("p");
+    const tipo = params.get("t");
+    const id = params.get("id");
+
+    if (plataforma === "Spotify" && tipo === "track" && id) {
+      const spotifyURL = "https://open.spotify.com/track/" + id;
+      setTimeout(() => {
+        window.location.href = spotifyURL;
+      }, 800);
+    }
+  </script>
+
+</body>
+</html>
