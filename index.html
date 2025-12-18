@@ -7,21 +7,27 @@
   const id = params.get("id");
 
   const userAgent = navigator.userAgent;
-  const os = userAgent.includes("iPhone") || userAgent.includes("iPad")
-    ? "iOS"
-    : "Android";
+  const os =
+    userAgent.includes("iPhone") || userAgent.includes("iPad")
+      ? "iOS"
+      : "Android";
 
+  // URL de registro (NO bloqueante)
   const logURL =
-    "https://script.google.com/macros/s/AKfycbxbN5yh9h4se8LsPlWL3JKuAk9a-AEZStFHk9rYqQLk/dev" +
-    ?cd=${cd}&p=${plataforma}&t=${tipo}&id=${id}&os=${os}&nav=${encodeURIComponent(userAgent)};
+    "https://script.google.com/macros/s/AKfycbxbN5yh9h4se8LsPlWL3JKuAk9a-AEZStFHk9rYqQLk/exec" +
+    `?cd=${cd}&p=${plataforma}&t=${tipo}&id=${id}&os=${os}`;
 
-  // Registro silencioso
-  fetch(logURL).catch(() => {});
+  // Registro silencioso (sin esperar respuesta)
+  const img = new Image();
+  img.src = logURL;
 
-  // Redirección Spotify
+  // Redirección garantizada
   if (plataforma === "Spotify" && tipo === "track" && id) {
     setTimeout(() => {
-      window.location.href = "https://open.spotify.com/track/" + id;
-    }, 700);
-  }
+      window.location.href =
+        "https://open.spotify.com/track/" + id;
+    }, 300);
+  } else {
+    document.body.innerHTML = "<p>Contenido no disponible</p>";
+  }
 </script>
