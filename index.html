@@ -1,42 +1,61 @@
-<script>
-(function () {
-  const params = new URLSearchParams(window.location.search);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini CD NFC</title>
+</head>
 
-  const cd = params.get("cd") || "SIN_CD";
-  const plataforma = params.get("p") || "Desconocido";
-  const tipo = params.get("t") || "";
-  const id = params.get("id") || "";
+<body>
 
-  const ua = navigator.userAgent;
+  <p>Reproduciendo Mini CD…</p>
 
-  let os = "Otro";
-  if (/iPhone|iPad/i.test(ua)) os = "iOS";
-  else if (/Android/i.test(ua)) os = "Android";
+  <script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
 
-  // Construcción segura de URL
-  const logURL =
-    "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec" +
-    "?cd=" + encodeURIComponent(cd) +
-    "&p=" + encodeURIComponent(plataforma) +
-    "&t=" + encodeURIComponent(tipo) +
-    "&id=" + encodeURIComponent(id) +
-    "&os=" + encodeURIComponent(os) +
-    "&nav=" + encodeURIComponent(ua);
+    const cd = params.get("cd") || "SIN_CD";
+    const plataforma = params.get("p") || "Desconocido";
+    const tipo = params.get("t") || "";
+    const id = params.get("id") || "";
 
-  // Registro universal (no bloqueante)
-  const img = new Image();
-  img.referrerPolicy = "no-referrer";
-  img.src = logURL;
+    const ua = navigator.userAgent;
 
-  // Redirección segura
-  if (plataforma === "Spotify" && tipo === "track" && id) {
+    let os = "Otro";
+    if (/iPhone|iPad/i.test(ua)) os = "iOS";
+    else if (/Android/i.test(ua)) os = "Android";
+
+    const baseLogURL = "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec";
+
+    const query =
+      "?cd=" + encodeURIComponent(cd) +
+      "&p=" + encodeURIComponent(plataforma) +
+      "&t=" + encodeURIComponent(tipo) +
+      "&id=" + encodeURIComponent(id) +
+      "&os=" + encodeURIComponent(os) +
+      "&nav=" + encodeURIComponent(ua);
+
+    // MÉTODO 1 — Pasivo
+    const img = new Image();
+    img.referrerPolicy = "no-referrer";
+    img.src = baseLogURL + query;
+
+    // MÉTODO 2 — Brave / Firefox
     setTimeout(function () {
-      window.location.href =
-        "https://open.spotify.com/track/" + id;
-    }, 250);
-  } else {
-    document.body.innerHTML =
-      "<p>Contenido no disponible</p>";
-  }
-})();
-</script>
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = baseLogURL + query;
+      document.body.appendChild(iframe);
+    }, 50);
+
+    // Redirección final
+    if (plataforma === "Spotify" && tipo === "track" && id) {
+      setTimeout(function () {
+        window.location.href =
+          "https://open.spotify.com/track/" + id;
+      }, 300);
+    }
+  })();
+  </script>
+
+</body>
+</html>
