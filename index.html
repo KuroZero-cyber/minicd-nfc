@@ -7,27 +7,32 @@
   const id = params.get("id");
 
   const userAgent = navigator.userAgent;
-  const os =
-    userAgent.includes("iPhone") || userAgent.includes("iPad")
-      ? "iOS"
-      : "Android";
 
-  // URL de registro (NO bloqueante)
+  let os = "Desconocido";
+  if (userAgent.includes("iPhone") || userAgent.includes("iPad")) {
+    os = "iOS";
+  } else if (userAgent.includes("Android")) {
+    os = "Android";
+  }
+
   const logURL =
     "https://script.google.com/macros/s/AKfycbxbN5yh9h4se8LsPlWL3JKuAk9a-AEZStFHk9rYqQLk/exec" +
-    `?cd=${cd}&p=${plataforma}&t=${tipo}&id=${id}&os=${os}`;
+    `?cd=${cd}` +
+    `&p=${plataforma}` +
+    `&t=${tipo}` +
+    `&id=${id}` +
+    `&os=${os}` +
+    `&nav=${encodeURIComponent(userAgent)}`;
 
-  // Registro silencioso (sin esperar respuesta)
+  // Registro compatible iOS / Android
   const img = new Image();
   img.src = logURL;
 
-  // Redirección garantizada
+  // Redirección
   if (plataforma === "Spotify" && tipo === "track" && id) {
     setTimeout(() => {
       window.location.href =
         "https://open.spotify.com/track/" + id;
     }, 300);
-  } else {
-    document.body.innerHTML = "<p>Contenido no disponible</p>";
   }
 </script>
