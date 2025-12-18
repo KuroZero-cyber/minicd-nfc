@@ -1,28 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Mini CD</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
 
-  <p>Reproduciendo Mini CD…</p>
+  const cd = params.get("cd");
+  const plataforma = params.get("p");
+  const tipo = params.get("t");
+  const id = params.get("id");
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
+  const userAgent = navigator.userAgent;
+  const os = userAgent.includes("iPhone") || userAgent.includes("iPad")
+    ? "iOS"
+    : "Android";
 
-    const plataforma = params.get("p");
-    const tipo = params.get("t");
-    const id = params.get("id");
+  const logURL =
+    "https://script.google.com/macros/s/AKfycbxbN5yh9h4se8LsPlWL3JKuAk9a-AEZStFHk9rYqQLk/exec" +
+    ?cd=${cd}&p=${plataforma}&t=${tipo}&id=${id}&os=${os}&nav=${encodeURIComponent(userAgent)};
 
-    if (plataforma === "Spotify" && tipo === "track" && id) {
-      const spotifyURL = "https://open.spotify.com/track/" + id;
-      setTimeout(() => {
-        window.location.href = spotifyURL;
-      }, 800);
-    }
-  </script>
+  // Registro silencioso
+  fetch(logURL).catch(() => {});
 
-</body>
-</html>
+  // Redirección Spotify
+  if (plataforma === "Spotify" && tipo === "track" && id) {
+    setTimeout(() => {
+      window.location.href = "https://open.spotify.com/track/" + id;
+    }, 700);
+  }
+</script>
