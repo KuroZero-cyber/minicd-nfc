@@ -1,38 +1,42 @@
 <script>
+(function () {
   const params = new URLSearchParams(window.location.search);
 
-  const cd = params.get("cd");
-  const plataforma = params.get("p");
-  const tipo = params.get("t");
-  const id = params.get("id");
+  const cd = params.get("cd") || "SIN_CD";
+  const plataforma = params.get("p") || "Desconocido";
+  const tipo = params.get("t") || "";
+  const id = params.get("id") || "";
 
-  const userAgent = navigator.userAgent;
+  const ua = navigator.userAgent;
 
-  let os = "Desconocido";
-  if (userAgent.includes("iPhone") || userAgent.includes("iPad")) {
-    os = "iOS";
-  } else if (userAgent.includes("Android")) {
-    os = "Android";
-  }
+  let os = "Otro";
+  if (/iPhone|iPad/i.test(ua)) os = "iOS";
+  else if (/Android/i.test(ua)) os = "Android";
 
+  // Construcción segura de URL
   const logURL =
-    "https://script.google.com/macros/s/AKfycbxbN5yh9h4se8LsPlWL3JKuAk9a-AEZStFHk9rYqQLk/exec" +
-    `?cd=${cd}` +
-    `&p=${plataforma}` +
-    `&t=${tipo}` +
-    `&id=${id}` +
-    `&os=${os}` +
-    `&nav=${encodeURIComponent(userAgent)}`;
+    "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec" +
+    "?cd=" + encodeURIComponent(cd) +
+    "&p=" + encodeURIComponent(plataforma) +
+    "&t=" + encodeURIComponent(tipo) +
+    "&id=" + encodeURIComponent(id) +
+    "&os=" + encodeURIComponent(os) +
+    "&nav=" + encodeURIComponent(ua);
 
-  // Registro compatible iOS / Android
+  // Registro universal (no bloqueante)
   const img = new Image();
+  img.referrerPolicy = "no-referrer";
   img.src = logURL;
 
-  // Redirección
+  // Redirección segura
   if (plataforma === "Spotify" && tipo === "track" && id) {
-    setTimeout(() => {
+    setTimeout(function () {
       window.location.href =
         "https://open.spotify.com/track/" + id;
-    }, 300);
+    }, 250);
+  } else {
+    document.body.innerHTML =
+      "<p>Contenido no disponible</p>";
   }
+})();
 </script>
