@@ -1,93 +1,35 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Mini CD NFC</title>
-</head>
-
-<body>
-
-  <p>Reproduciendo Mini CD…</p>
-
-  <script>
-(async function () {
+<script>
+(function () {
   const params = new URLSearchParams(window.location.search);
 
   const cd = params.get("cd") || "SIN_CD";
-  const plataforma = params.get("p") || "Desconocido";
+  const plataforma = params.get("p") || "";
   const tipo = params.get("t") || "";
   const id = params.get("id") || "";
 
-  const ua = navigator.userAgent;
-  let os = "Otro";
-  if (/iPhone|iPad/i.test(ua)) os = "iOS";
-  else if (/Android/i.test(ua)) os = "Android";
+  const baseLogURL =
+    "https://script.google.com/macros/s/TU_ID/exec";
 
-  const baseLogURL = "https://script.google.com/macros/s/TU_ID/exec";
-
+  // 📡 REGISTRO PASIVO (no bloquea)
   const query =
     "?cd=" + encodeURIComponent(cd) +
     "&p=" + encodeURIComponent(plataforma) +
     "&t=" + encodeURIComponent(tipo) +
-    "&id=" + encodeURIComponent(id) +
-    "&os=" + encodeURIComponent(os) +
-    "&nav=" + encodeURIComponent(ua);
+    "&id=" + encodeURIComponent(id);
 
-  try {
-    // 🔎 CONSULTA ESTADO
-    const r = await fetch(baseLogURL + "?cd=" + cd);
-    const data = await r.json();
+  new Image().src = baseLogURL + query;
 
-    if (!data.activo) {
-      document.body.innerHTML =
-        "<h2>Este Mini CD no está activo</h2>";
-      return;
-    }
+  // 🎵 APERTURA DIRECTA (CLAVE)
+  if (plataforma === "Spotify" && tipo === "track" && id) {
 
-    // 📡 REGISTRO
-    new Image().src = baseLogURL + query;
+    // 1️⃣ Deep link app
+    window.location.href = "spotify:track:" + id;
 
-// 🎵 REDIRECCIÓN AVANZADA (Android + iOS)
-if (plataforma.toLowerCase() === "spotify" && id) {
-
-  const spotifyWeb =
-    "https://open.spotify.com/track/" + id;
-
-  const spotifyIntent =
-    "intent://open.spotify.com/track/" + id +
-    "#Intent;scheme=https;package=com.spotify.music;end";
-
-  const isAndroid = /Android/i.test(navigator.userAgent);
-
-  // 🚀 Intento automático
-  setTimeout(() => {
-    if (isAndroid) {
-      window.location.href = spotifyIntent;
-    } else {
-      window.location.href = spotifyWeb;
-    }
-  }, 300);
-
-  // 🖱️ BOTÓN FALLBACK ÚNICO
-  const btn = document.createElement("button");
-  btn.innerText = "Abrir en Spotify";
-  btn.style.fontSize = "18px";
-  btn.style.padding = "14px 22px";
-  btn.style.marginTop = "24px";
-  btn.style.cursor = "pointer";
-
-  btn.onclick = () => {
-    window.location.href = spotifyWeb;
-  };
-
-  document.body.appendChild(btn);
-}
-    
-  } catch (e) {
-    console.warn("Error de verificación", e);
+    // 2️⃣ Fallback web
+    setTimeout(() => {
+      window.location.href =
+        "https://open.spotify.com/track/" + id;
+    }, 1000);
   }
 })();
 </script>
-
-</body>
-</html>
