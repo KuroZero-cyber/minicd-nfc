@@ -47,13 +47,29 @@
     // 📡 REGISTRO
     new Image().src = baseLogURL + query;
 
-    // 🎵 REDIRECCIÓN
-    if (plataforma === "Spotify" && tipo === "track" && id) {
-      setTimeout(() => {
-        window.location.href =
-          "https://open.spotify.com/track/" + id;
-      }, 300);
-    }
+    // 🎵 REDIRECCIÓN (robusta + compatible)
+if (plataforma.toLowerCase() === "spotify" && id) {
+
+  // Intento automático
+  setTimeout(() => {
+    window.location.href =
+      "https://open.spotify.com/track/" + id;
+  }, 300);
+
+  // Fallback manual (iOS / Brave)
+  const btn = document.createElement("button");
+  btn.innerText = "Abrir en Spotify";
+  btn.style.fontSize = "18px";
+  btn.style.padding = "12px 20px";
+  btn.style.marginTop = "20px";
+
+  btn.onclick = () => {
+    window.location.href =
+      "https://open.spotify.com/track/" + id;
+  };
+
+  document.body.appendChild(btn);
+}
 
   } catch (e) {
     console.warn("Error de verificación", e);
