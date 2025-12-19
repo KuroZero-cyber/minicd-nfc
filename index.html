@@ -47,45 +47,42 @@
     // 📡 REGISTRO
     new Image().src = baseLogURL + query;
 
-    // 🎵 REDIRECCIÓN REAL A SPOTIFY
+// 🎵 REDIRECCIÓN AVANZADA (Android + iOS)
 if (plataforma.toLowerCase() === "spotify" && id) {
 
-  const spotifyApp = "spotify://track/" + id;
-  const spotifyIntent =
-    "intent://track/" + id +
-    "#Intent;scheme=spotify;package=com.spotify.music;end";
   const spotifyWeb =
     "https://open.spotify.com/track/" + id;
 
-  // 1️⃣ Intento automático (Android)
-  setTimeout(() => {
-    window.location.href = spotifyIntent;
-  }, 200);
+  const spotifyIntent =
+    "intent://open.spotify.com/track/" + id +
+    "#Intent;scheme=https;package=com.spotify.music;end";
 
-  // 2️⃣ Fallback a app directa
-  setTimeout(() => {
-    window.location.href = spotifyApp;
-  }, 600);
+  const isAndroid = /Android/i.test(navigator.userAgent);
 
-  // 3️⃣ Fallback web
+  // 🚀 Intento automático
   setTimeout(() => {
-    window.location.href = spotifyWeb;
-  }, 1200);
+    if (isAndroid) {
+      window.location.href = spotifyIntent;
+    } else {
+      window.location.href = spotifyWeb;
+    }
+  }, 300);
 
-  // 4️⃣ Botón manual (Brave / iOS)
+  // 🖱️ BOTÓN FALLBACK ÚNICO
   const btn = document.createElement("button");
   btn.innerText = "Abrir en Spotify";
   btn.style.fontSize = "18px";
   btn.style.padding = "14px 22px";
   btn.style.marginTop = "24px";
+  btn.style.cursor = "pointer";
 
   btn.onclick = () => {
-    window.location.href = spotifyApp;
+    window.location.href = spotifyWeb;
   };
 
   document.body.appendChild(btn);
 }
-
+    
   } catch (e) {
     console.warn("Error de verificación", e);
   }
