@@ -47,25 +47,40 @@
     // 📡 REGISTRO
     new Image().src = baseLogURL + query;
 
-    // 🎵 REDIRECCIÓN (robusta + compatible)
+    // 🎵 REDIRECCIÓN REAL A SPOTIFY
 if (plataforma.toLowerCase() === "spotify" && id) {
 
-  // Intento automático
-  setTimeout(() => {
-    window.location.href =
-      "https://open.spotify.com/track/" + id;
-  }, 300);
+  const spotifyApp = "spotify://track/" + id;
+  const spotifyIntent =
+    "intent://track/" + id +
+    "#Intent;scheme=spotify;package=com.spotify.music;end";
+  const spotifyWeb =
+    "https://open.spotify.com/track/" + id;
 
-  // Fallback manual (iOS / Brave)
+  // 1️⃣ Intento automático (Android)
+  setTimeout(() => {
+    window.location.href = spotifyIntent;
+  }, 200);
+
+  // 2️⃣ Fallback a app directa
+  setTimeout(() => {
+    window.location.href = spotifyApp;
+  }, 600);
+
+  // 3️⃣ Fallback web
+  setTimeout(() => {
+    window.location.href = spotifyWeb;
+  }, 1200);
+
+  // 4️⃣ Botón manual (Brave / iOS)
   const btn = document.createElement("button");
   btn.innerText = "Abrir en Spotify";
   btn.style.fontSize = "18px";
-  btn.style.padding = "12px 20px";
-  btn.style.marginTop = "20px";
+  btn.style.padding = "14px 22px";
+  btn.style.marginTop = "24px";
 
   btn.onclick = () => {
-    window.location.href =
-      "https://open.spotify.com/track/" + id;
+    window.location.href = spotifyApp;
   };
 
   document.body.appendChild(btn);
