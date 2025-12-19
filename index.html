@@ -23,7 +23,7 @@
   if (/iPhone|iPad/i.test(ua)) os = "iOS";
   else if (/Android/i.test(ua)) os = "Android";
 
-  const baseLogURL = "https://script.google.com/macros/s/AKfycbx0AS46rpwfTbWNuA57WWRjOsGL40mrkHQn8tdGSvT4CeAQHN8uW-ToLZu5cg1WJDXI6A/exec";
+  const baseLogURL = "https://script.google.com/macros/s/TU_ID/exec";
 
   const query =
     "?cd=" + encodeURIComponent(cd) +
@@ -34,20 +34,29 @@
     "&nav=" + encodeURIComponent(ua);
 
   try {
-    const res = await fetch(baseLogURL + query, { method: "GET" });
-    const data = await res.json();
+    // 🔎 CONSULTA ESTADO
+    const r = await fetch(baseLogURL + "?cd=" + cd);
+    const data = await r.json();
 
-    if (data.activo === true) {
-      if (plataforma === "Spotify" && tipo === "track" && id) {
+    if (!data.activo) {
+      document.body.innerHTML =
+        "<h2>Este Mini CD no está activo</h2>";
+      return;
+    }
+
+    // 📡 REGISTRO
+    new Image().src = baseLogURL + query;
+
+    // 🎵 REDIRECCIÓN
+    if (plataforma === "Spotify" && tipo === "track" && id) {
+      setTimeout(() => {
         window.location.href =
           "https://open.spotify.com/track/" + id;
-      }
-    } else {
-      window.location.href = "inactivo.html";
+      }, 300);
     }
+
   } catch (e) {
-    // fallback seguro
-    window.location.href = "inactivo.html";
+    console.warn("Error de verificación", e);
   }
 })();
 </script>
