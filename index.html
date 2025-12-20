@@ -7,29 +7,68 @@
   const tipo = params.get("t") || "";
   const id = params.get("id") || "";
 
-  const baseLogURL =
-    "https://script.google.com/macros/s/AKfycbzE_3O1Ttm3hvwVz5QVlWuW6jLDSDsbBryaTzipojhsejVhxfXUygOkLuWRbGIyc9mgeA/exec";
+  // 🧠 USER AGENT
+  const ua = navigator.userAgent;
 
-  // 📡 REGISTRO PASIVO (no bloquea)
+  // 📱 SISTEMA OPERATIVO
+  let sistema = "Otro";
+  if (/Android/i.test(ua)) sistema = "Android";
+  else if (/iPhone|iPad|iPod/i.test(ua)) sistema = "iOS";
+  else if (/Windows NT/i.test(ua)) sistema = "Windows";
+  else if (/Mac OS X/i.test(ua)) sistema = "macOS";
+  else if (/Linux/i.test(ua)) sistema = "Linux";
+
+  // 🌐 NAVEGADOR
+  let navegador = "Otro";
+  if (/Brave/i.test(ua)) navegador = "Brave";
+  else if (/Edg/i.test(ua)) navegador = "Edge";
+  else if (/OPR|Opera/i.test(ua)) navegador = "Opera";
+  else if (/Firefox/i.test(ua)) navegador = "Firefox";
+  else if (/Chrome/i.test(ua)) navegador = "Chrome";
+  else if (/Safari/i.test(ua)) navegador = "Safari";
+
+  const baseLogURL =
+    "https://script.google.com/macros/s/TU_ID/exec";
+
+  // 🎵 APERTURA INMEDIATA
+  if (plataforma === "Spotify" && tipo === "track" && id) {
+    window.location.href = "spotify:track:" + id;
+  }
+
+  // 📡 REGISTRO PASIVO (YA CON SISTEMA Y NAVEGADOR)
   const query =
     "?cd=" + encodeURIComponent(cd) +
     "&p=" + encodeURIComponent(plataforma) +
     "&t=" + encodeURIComponent(tipo) +
-    "&id=" + encodeURIComponent(id);
+    "&id=" + encodeURIComponent(id) +
+    "&os=" + encodeURIComponent(sistema) +
+    "&nav=" + encodeURIComponent(navegador);
 
   new Image().src = baseLogURL + query;
 
-  // 🎵 APERTURA DIRECTA (CLAVE)
+  // 🛟 FALLBACK WEB
   if (plataforma === "Spotify" && tipo === "track" && id) {
-
-    // 1️⃣ Deep link app
-    window.location.href = "spotify:track:" + id;
-
-    // 2️⃣ Fallback web
     setTimeout(() => {
       window.location.href =
         "https://open.spotify.com/track/" + id;
-    }, 1000);
+    }, 1200);
+  }
+
+  // 🖱️ BOTÓN UNIVERSAL
+  if (plataforma === "Spotify" && id) {
+    const btn = document.createElement("button");
+    btn.innerText = "Abrir en Spotify";
+    btn.style.fontSize = "18px";
+    btn.style.padding = "14px 22px";
+    btn.style.marginTop = "24px";
+    btn.style.cursor = "pointer";
+
+    btn.onclick = () => {
+      window.location.href =
+        "https://open.spotify.com/track/" + id;
+    };
+
+    document.body.appendChild(btn);
   }
 })();
 </script>
