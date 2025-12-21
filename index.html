@@ -35,29 +35,23 @@
   const baseLogURL =
     "https://script.google.com/macros/s/AKfycbzE_3O1Ttm3hvwVz5QVlWuW6jLDSDsbBryaTzipojhsejVhxfXUygOkLuWRbGIyc9mgeA/exec";
 
-  // 🔎 CONSULTAR ESTADO DEL CD (ÚNICA VEZ)
+  // 🔎 CONSULTAR ESTADO DEL CD
   fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
     .then(r => r.json())
     .then(data => {
-      
+
       if (!data.activo) {
+        // ✅ CORRECCIÓN: href bien escrito
         window.location.href = "inactivo.html";
-        return; //⛔ NADA más se ejecuta
-        
-       /* document.getElementById("app").innerHTML = `
-          <h2>⛔ Mini CD inactivo</h2>
-          <p>Este contenido ha sido deshabilitado.</p>
-        `;
-        return; // ⛔ corta todo*/
+        return; // ⛔ se corta TODO
       }
 
       continuarFlujo();
     });
 
-  //Solo se debe ejecutar 
   function continuarFlujo() {
 
-    // 📡 REGISTRO PASIVO
+    // 📡 REGISTRO PASIVO (PRIMERO)
     const query =
       "?cd=" + encodeURIComponent(cd) +
       "&p=" + encodeURIComponent(plataforma) +
@@ -70,18 +64,19 @@
 
     // ⏳ ESPERA CORTA PARA ASEGURAR REGISTRO
     setTimeout(() => {
-    
-    // 🎵 APERTURA INMEDIATA
-    if (plataforma === "Spotify" && tipo === "track" && id) {
-      window.location.href = "spotify:track:" + id;
-    }
 
-    // 🛟 FALLBACK
-    setTimeout(() => {
-      window.location.href =
-        "https://open.spotify.com/track/" + id;
-    }, 1200);
-    },400);
+      // 🎵 ABRIR SPOTIFY DESPUÉS
+      if (plataforma === "Spotify" && tipo === "track" && id) {
+        window.location.href = "spotify:track:" + id;
+      }
+
+      // 🛟 FALLBACK WEB
+      setTimeout(() => {
+        window.location.href =
+          "https://open.spotify.com/track/" + id;
+      }, 1200);
+
+    }, 400);
   }
 
   // 🖱️ BOTÓN UNIVERSAL
