@@ -30,6 +30,24 @@
   const baseLogURL =
     "https://script.google.com/macros/s/AKfycbzE_3O1Ttm3hvwVz5QVlWuW6jLDSDsbBryaTzipojhsejVhxfXUygOkLuWRbGIyc9mgeA/exec";
 
+  // 🔎 CONSULTAR ESTADO DEL CD
+fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
+  .then(r => r.json())
+  .then(data => {
+    if (!data.activo) {
+      document.body.innerHTML = `
+        <h2>⛔ Mini CD inactivo</h2>
+        <p>Este contenido ha sido deshabilitado.</p>
+      `;
+      throw new Error("CD inactivo"); // ⛔ corta todo
+    }
+
+    // ✅ SOLO SI ESTÁ ACTIVO SE CONTINÚA
+    continuarFlujo();
+  })
+  .catch(() => {});
+  
+  function continuarFlujo() {
   // 🎵 APERTURA INMEDIATA
   if (plataforma === "Spotify" && tipo === "track" && id) {
     window.location.href = "spotify:track:" + id;
@@ -70,5 +88,6 @@
 
     document.body.appendChild(btn);
   }
+}
 })();
 </script>
