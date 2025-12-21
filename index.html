@@ -41,7 +41,7 @@
     .then(data => {
       
       if (!data.activo) {
-        window.location.herf = "inactivo.html";
+        window.location.href = "inactivo.html";
         return; //⛔ NADA más se ejecuta
         
        /* document.getElementById("app").innerHTML = `
@@ -57,11 +57,6 @@
   //Solo se debe ejecutar 
   function continuarFlujo() {
 
-    // 🎵 APERTURA INMEDIATA
-    if (plataforma === "Spotify" && tipo === "track" && id) {
-      window.location.href = "spotify:track:" + id;
-    }
-
     // 📡 REGISTRO PASIVO
     const query =
       "?cd=" + encodeURIComponent(cd) +
@@ -73,11 +68,20 @@
 
     new Image().src = baseLogURL + query;
 
+    // ⏳ ESPERA CORTA PARA ASEGURAR REGISTRO
+    setTimeout(() => {
+    
+    // 🎵 APERTURA INMEDIATA
+    if (plataforma === "Spotify" && tipo === "track" && id) {
+      window.location.href = "spotify:track:" + id;
+    }
+
     // 🛟 FALLBACK
     setTimeout(() => {
       window.location.href =
         "https://open.spotify.com/track/" + id;
     }, 1200);
+    },400);
   }
 
   // 🖱️ BOTÓN UNIVERSAL
