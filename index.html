@@ -2,6 +2,7 @@
   <div id="app">
     <h2>Cargando Mini CD…</h2>
   </div>
+
 <script>
 (function () {
   const params = new URLSearchParams(window.location.search);
@@ -34,46 +35,45 @@
   const baseLogURL =
     "https://script.google.com/macros/s/AKfycbzE_3O1Ttm3hvwVz5QVlWuW6jLDSDsbBryaTzipojhsejVhxfXUygOkLuWRbGIyc9mgeA/exec";
 
-  // 🔎 CONSULTAR ESTADO DEL CD
-fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
-  .then(r => r.json())
-  .then(data => {
-    if (!data.activo) {
-      document.body.innerHTML = `
-        <h2>⛔ Mini CD inactivo</h2>
-        <p>Este contenido ha sido deshabilitado.</p>
-      `;
-      throw new Error("CD inactivo"); // ⛔ corta todo
+  // 🔎 CONSULTAR ESTADO DEL CD (ÚNICA VEZ)
+  fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
+    .then(r => r.json())
+    .then(data => {
+      if (!data.activo) {
+        document.getElementById("app").innerHTML = `
+          <h2>⛔ Mini CD inactivo</h2>
+          <p>Este contenido ha sido deshabilitado.</p>
+        `;
+        return; // ⛔ corta todo
+      }
+
+      continuarFlujo();
+    });
+
+  function continuarFlujo() {
+
+    // 🎵 APERTURA INMEDIATA
+    if (plataforma === "Spotify" && tipo === "track" && id) {
+      window.location.href = "spotify:track:" + id;
     }
 
-    // ✅ SOLO SI ESTÁ ACTIVO SE CONTINÚA
-    continuarFlujo();
-  })
-  .catch(() => {});
-  
-  function continuarFlujo() {
-  // 🎵 APERTURA INMEDIATA
-  if (plataforma === "Spotify" && tipo === "track" && id) {
-    window.location.href = "spotify:track:" + id;
+    // 📡 REGISTRO PASIVO
+    const query =
+      "?cd=" + encodeURIComponent(cd) +
+      "&p=" + encodeURIComponent(plataforma) +
+      "&t=" + encodeURIComponent(tipo) +
+      "&id=" + encodeURIComponent(id) +
+      "&os=" + encodeURIComponent(sistema) +
+      "&nav=" + encodeURIComponent(navegador);
+
+    new Image().src = baseLogURL + query;
+
+    // 🛟 FALLBACK
+    setTimeout(() => {
+      window.location.href =
+        "https://open.spotify.com/track/" + id;
+    }, 1200);
   }
-
-  // 📡 REGISTRO PASIVO (YA CON SISTEMA Y NAVEGADOR)
-  const query =
-    "?cd=" + encodeURIComponent(cd) +
-    "&p=" + encodeURIComponent(plataforma) +
-    "&t=" + encodeURIComponent(tipo) +
-    "&id=" + encodeURIComponent(id) +
-    "&os=" + encodeURIComponent(sistema) +
-    "&nav=" + encodeURIComponent(navegador);
-
-  new Image().src = baseLogURL + query;
-
- // 🛟 FALLBACK
-  setTimeout(() => {
-    window.location.href =
-      "https://open.spotify.com/track/" + id;
-  }, 1200);
-}
 
   // 🖱️ BOTÓN UNIVERSAL
   if (plataforma === "Spotify" && id) {
@@ -91,6 +91,7 @@ fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
 
     document.body.appendChild(btn);
   }
-}
+
 })();
 </script>
+</body>
