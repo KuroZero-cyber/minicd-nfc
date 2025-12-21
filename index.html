@@ -42,7 +42,8 @@
       
       if (!data.activo) {
         window.location.herf = "inactivo.html";
-        return;
+        return; //⛔ NADA más se ejecuta
+        
        /* document.getElementById("app").innerHTML = `
           <h2>⛔ Mini CD inactivo</h2>
           <p>Este contenido ha sido deshabilitado.</p>
@@ -53,6 +54,7 @@
       continuarFlujo();
     });
 
+  //Solo se debe ejecutar 
   function continuarFlujo() {
 
     // 🎵 APERTURA INMEDIATA
