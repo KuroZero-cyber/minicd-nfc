@@ -39,12 +39,15 @@
   fetch(baseLogURL + "?accion=estado&cd=" + encodeURIComponent(cd))
     .then(r => r.json())
     .then(data => {
+      
       if (!data.activo) {
-        document.getElementById("app").innerHTML = `
+        window.location.herf = "inactivo.html";
+        return;
+       /* document.getElementById("app").innerHTML = `
           <h2>⛔ Mini CD inactivo</h2>
           <p>Este contenido ha sido deshabilitado.</p>
         `;
-        return; // ⛔ corta todo
+        return; // ⛔ corta todo*/
       }
 
       continuarFlujo();
