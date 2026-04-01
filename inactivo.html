@@ -3,9 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>Mini CD Inactivo</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #111;
+      color: white;
+      padding: 40px;
+    }
+
+    .box {
+      max-width: 400px;
+      margin: auto;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #00c853;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #previewBtn {
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+  </style>
 </head>
+
 <body>
-  <h2>Este Mini CD no está activo</h2>
-  <p>Contacta al proveedor para más información.</p>
+
+  <div class="box">
+    <h2>❌ Mini CD inactivo</h2>
+    <p>Este dispositivo fue dado de baja.</p>
+
+    <!-- BOTÓN DE REPOSICIÓN -->
+    <button id="btnReponer">Solicitar reposición</button>
+
+    <!-- SLIDER PARA TAMAÑO -->
+    <input type="range" min="10" max="40" value="16" id="slider">
+
+    <p>Tamaño del botón: <span id="valor">16</span>px</p>
+  </div>
+
+  <script>
+    const btn = document.getElementById("btnReponer");
+    const slider = document.getElementById("slider");
+    const valor = document.getElementById("valor");
+
+    // 👉 Acción del botón
+    btn.onclick = () => {
+      alert("Aquí puedes conectar reposición (WhatsApp, formulario, etc)");
+    };
+
+    // 👉 Control del tamaño
+    slider.oninput = () => {
+      let size = slider.value;
+      btn.style.fontSize = size + "px";
+      valor.innerText = size;
+    };
+  </script>
+
 </body>
 </html>
